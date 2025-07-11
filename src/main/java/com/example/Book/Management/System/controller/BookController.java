@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN') or hasRole('LIBRARIAN')")
     public ResponseEntity<List<BookDto>> getAllBooks() {
         List<BookDto> books = bookService.getAllBooks();
         return ResponseEntity.ok(books);
@@ -54,6 +56,7 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         try {
             bookService.deleteBook(id);
